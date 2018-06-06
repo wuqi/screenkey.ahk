@@ -82,7 +82,7 @@ CaptureKeyboardInputs()
 ,Volume_Mute,Browser_Back,Browser_Favorites,Browser_Home,Browser_Refresh,Browser_Search,Browser_Stop,Launch_App1,Launch_App2
 ,Launch_Mail,Launch_Media,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,F13,F14,F15,F16,F17,F18,F19,F20,F21,F22
 ,1,2,3,4,5,6,7,8,9,0,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
-,[,],',=,\,/
+,[,],',=,\,/,-
 
     Loop Parse, keys, `,
         Hotkey, ~*%A_LoopField%, KeyHandleLabel, UseErrorLevel
@@ -102,7 +102,7 @@ clear := false
 KeyHandle()
 {
     global
-    special := "[,],',=,\,/,;,``,.,1,2,3,4,5,6,7,8,9,0,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z"
+    special := "[,],',-,=,\,/,;,``,.,1,2,3,4,5,6,7,8,9,0,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z"
     keyname := RegExReplace(A_ThisHotKey, "~\*", "")
     hotkeyDown := 0
     prefix :=""
