@@ -2,8 +2,8 @@
 ; Config area
 
 ; Font settings
-fontSize = 20                   
-fontName = Verdana
+fontSize = 10
+fontName = Tahoma
 fontStyle = Bold
 
 ; The max number of keys that are listed on the screen
@@ -13,11 +13,11 @@ numButtons := 5
 transparent := true
 
 ; Distance from the buttons to the edge of the window
-winMargin := 25
+winMargin := 10
 
 ; When this is true, old keys are cleared after the speed timer interval
 useSpeedTimer := true
-speedTimer := 1000
+speedTimer := 300
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Font metrics functions
@@ -39,6 +39,7 @@ FontHeight()
 Gui +ToolWindow +AlwaysOnTop
 
 Gui Font, s%fontSize% %fontStyle%, %fontName%
+Gui Font, s%fontSize% %fontStyle%, Microsoft Yahei
 
 ; Create the buttons with 0 width
 Loop % numButtons 
@@ -51,7 +52,7 @@ Loop % numButtons
 }
 
 ; Show the gui with a default 200 width
-Gui Show, w200, Screenkey.ahk  
+Gui Show, w200, Screenkey
 
 ; Save the window id
 WinGet k_ID, ID, A   
@@ -75,7 +76,7 @@ CaptureKeyboardInputs()
 {
     global
     static keys
-    keys=RButton,MButton,RWin,LWin,Alt,Space,Enter,Tab,Esc,BackSpace,Del,Ins,Home,End,PgDn,PgUp,Up,Down,Left,Right,CtrlBreak,ScrollLock,PrintScreen,CapsLock
+    keys=LButton,RButton,MButton,RWin,LWin,Alt,Space,Enter,Tab,Esc,BackSpace,Del,Ins,Home,End,PgDn,PgUp,Up,Down,Left,Right,CtrlBreak,ScrollLock,PrintScreen,CapsLock
 ,Pause,AppsKey,NumLock,Numpad0,Numpad1,Numpad2,Numpad3,Numpad4,Numpad5,Numpad6,Numpad7,Numpad8,Numpad9,NumpadDot
 ,NumpadDiv,NumpadMult,NumpadAdd,NumpadSub,NumpadEnter,NumpadIns,NumpadEnd,NumpadDown,NumpadPgDn,NumpadLeft,NumpadClear
 ,NumpadRight,NumpadHome,NumpadUp,NumpadPgUp,NumpadDel,Media_Next,Media_Play_Pause,Media_Prev,Media_Stop,Volume_Down,Volume_Up
@@ -103,13 +104,25 @@ KeyHandle()
 {
     global
     special := "[,],',-,=,\,/,;,``,.,1,2,3,4,5,6,7,8,9,0,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z"
+    mark := "Up,Down,Left,Right,Dot,Div,Mult,Add,Sub,Enter,Space,Home,BackSpace"
     keyname := RegExReplace(A_ThisHotKey, "~\*", "")
+    keyname := RegExReplace(keyname, "Numpad", "")
+    if(Instr(mark,keyname)){
+        keyname := Mark(keyname)
+    }
     hotkeyDown := 0
     prefix :=""
+    numpad := "Numpad"
     Loop Parse, hotkeys, `,
     {
         key = %A_LoopField%
         isdown := GetKeyState(key, "P")
+        if(Instr(key,numpad)){
+            continue
+        }
+        if(Instr(mark,key)){
+            key := Mark(key)
+        }
         ;MsgBox , %a%
         if(isdown == 1 && key != keyname){
             hotkeyDown++
@@ -117,7 +130,7 @@ KeyHandle()
             prefix := prefix . "+"
         }
     }
-    
+
     if(hotkeyDown == 0 && Instr(special,keyname)){
         dispkey := Up(keyname)
     }else{
@@ -205,7 +218,7 @@ IsUpperCase(key)
 }
 
 Up(inkey)
-{   
+{
     outkey := ""
 
     if (IsUpperCase(inkey) && StrLen(inkey) == 1 && inkey >= "a" && inkey <= "z")
@@ -268,6 +281,36 @@ Up(inkey)
     return inkey
 }
 
+Mark(inkey)
+{
+    if (inkey == "Up")
+        return "↑"
+    if (inkey == "Down")
+        return "↓"
+    if (inkey == "Left")
+        return "←"
+    if (inkey == "Right")
+        return "→"
+    if (inkey == "Dot")
+        return "."
+    if (inkey == "Div")
+        return "/"
+    if (inkey == "Mult")
+        return "*"
+    if (inkey == "Add")
+        return "+"
+    if (inkey == "Sub")
+        return "-"
+    if(inkey == "Enter")
+        return "↵"
+    if(inkey == "Space")
+        return "␣"
+    if(inkey == "Home")
+        return "⌂"
+    if(inkey == "BackSpace")
+        return "⇦"
+    return inkey
+}
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Install hotkeys
 
